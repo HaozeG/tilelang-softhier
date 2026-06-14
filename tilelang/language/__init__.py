@@ -75,6 +75,18 @@ from .reduce_op import (
     warp_reduce_bitor,  # noqa: F401
 )
 from .print_op import print, device_assert  # noqa: F401
+from .collective_op import (
+    allreduce,  # noqa: F401
+    broadcast,  # noqa: F401
+    group_shift,  # noqa: F401
+    group_bcast_axis,  # noqa: F401
+    scatter,  # noqa: F401
+    gather,  # noqa: F401
+    alloc_gather_dst,  # noqa: F401
+    alloc_scatter_src,  # noqa: F401
+    synchronize,  # noqa: F401
+    arrive_wait,  # noqa: F401
+)
 from .customize import (
     atomic_max,  # noqa: F401
     atomic_min,  # noqa: F401
@@ -111,6 +123,7 @@ from .annotations import (  # noqa: F401
     annotate_l2_hit_ratio,
     annotate_restrict_buffers,
 )
+from .cluster_group import cluster_group, tile_layout  # noqa: F401
 
 from .random import (
     rng_init,  # noqa: F401

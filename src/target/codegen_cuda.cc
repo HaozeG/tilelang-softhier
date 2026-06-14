@@ -3401,6 +3401,25 @@ void CodeGenTileLangCUDA::VisitStmt_(const EvaluateNode *op) {
     std::string msg_expr = PrintExpr(call->args[1]);
     this->PrintIndent();
     stream << "device_assert_with_msg(" << cond << ", " << msg_expr << ");\n";
+  } else if (call) {
+    // Collective ops — pass-through stubs for downstream compilers (e.g., Deeploy).
+    // TileLang emits a comment; no CUDA collective implementation is generated here.
+    static const std::unordered_set<std::string> kCollectiveOps = {
+        "tl.tileop.allreduce",       "tl.tileop.broadcast",
+        "tl.tileop.scatter",         "tl.tileop.gather",
+        "tl.tileop.alloc_gather_dst","tl.tileop.alloc_scatter_src",
+        "tl.tileop.synchronize",     "tl.tileop.arrive_wait",
+    };
+    if (auto opt_op = call->op.as<Op>()) {
+      std::string name(opt_op.value()->name);
+      if (kCollectiveOps.count(name)) {
+        this->PrintIndent();
+        stream << "// " << name
+               << " — lowered by downstream compiler (e.g., Deeploy)\n";
+        return;
+      }
+    }
+    CodeGenC::VisitStmt_(op);
   } else {
     CodeGenC::VisitStmt_(op);
   }
